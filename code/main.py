@@ -61,20 +61,20 @@ def main():
     print('precal cost : ',end-start)
     cprint('[PRECALCULATE--END]')
 
-    models = {'LightGCN':model.LightGCN, 'GTN':model.GTN, 'SGL':model.SGL, 'SimGCL':model.SimGCL, 'GCLRec':model.GCLRec, 'LightGCN_PyG':model.LightGCN_PyG}
-    Recmodel = models[world.config['model']](world.config, dataset, precal).to(world.device)
+    encoders = {'LightGCN':model.LightGCN, 'LightGCN_PyG':model.LightGCN_PyG}
+    Recmodel = encoders[world.config['model']](world.config, dataset, precal).to(world.device)
 
     homophily = Homophily(Recmodel)
 
-    augments = {'No':None, 'ED':augment.ED_Uniform, 'RW':augment.RW_Uniform, 'SVD':augment.SVD_Augment, 'Adaptive':augment.Adaptive_Neighbor_Augment, 'Learner':augment.Augment_Learner}
-    if world.config['augment'] in ['ED', 'RW', 'SVD', 'Adaptive']:
+    augments = {'No':None, 'Adaptive':augment.Adaptive_Neighbor_Augment, 'Learner':augment.Augment_Learner}
+    if world.config['augment'] in ['Adaptive']:
         augmentation = augments[world.config['augment']](world.config, Recmodel, precal, homophily)
     elif world.config['augment'] in ['Learner']:
         augmentation = augments[world.config['augment']](world.config, Recmodel, precal, homophily, dataset).to(world.device)
     else:
         augmentation = None
 
-    losss = {'BPR': loss.BPR_loss, 'BPR_Contrast':loss.BPR_Contrast_loss, 'Softmax':loss.Softmax_loss, 'BC':loss.BC_loss, 'Adaptive':loss.Adaptive_softmax_loss, 'Causal_pop':loss.Causal_popularity_BPR_loss, 'DCL':loss.Debiased_Contrastive_loss}
+    losss = {'BPR': loss.BPR_loss, 'BPR_Contrast':loss.BPR_Contrast_loss, 'Adaptive':loss.Adaptive_softmax_loss}
     total_loss = losss[world.config['loss']](world.config, Recmodel, precal, homophily)
 
     w = SummaryWriter(join(world.BOARD_PATH, time.strftime("%m-%d-%Hh%Mm%Ss-") + "-" + str([(key,value)for key,value in world.log.items()])))
@@ -110,10 +110,6 @@ def main():
                     quantify.visualize_tsne(epoch)
                 if world.config['if_double_label'] == 1:
                     quantify.visualize_double_label(epoch)
-            
-            cprint('[AUGMENT]')
-            if world.config['model'] in ['SGL']:
-                augmentation.get_augAdjMatrix()
 
             cprint('[TRAIN]')
             avg_loss = train.train(dataset, Recmodel, augmentation, epoch, optimizer, w)

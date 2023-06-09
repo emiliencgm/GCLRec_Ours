@@ -23,7 +23,6 @@ os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
 config = {}
 config['temp_tau'] = args.temp_tau
-config['edge_drop_prob'] = args.edge_drop_prob
 config['latent_dim_rec'] = args.latent_dim_rec
 config['num_layers'] = args.num_layers
 config['if_pretrain'] = args.if_pretrain
@@ -31,7 +30,7 @@ config['dataset'] = args.dataset
 config['lr'] = args.lr
 config["weight_decay"] = args.weight_decay
 config['seed'] = args.seed
-config['model'] = args.model
+config['encoder'] = args.encoder
 config['if_load_embedding'] = args.if_load_embedding
 config['if_tensorboard'] = args.if_tensorboard
 config['epochs'] = args.epochs
@@ -44,19 +43,16 @@ config['test_u_batch_size'] = args.test_u_batch_size
 config['pop_group'] = args.pop_group
 config['if_big_matrix'] = args.if_big_matrix
 config['n_fold'] = args.n_fold
-config['p_drop'] = args.p_drop
 config['perplexity'] = args.perplexity
 config['visual_epoch'] = args.visual_epoch
 config['if_double_label'] = args.if_double_label
 config['if_tsne'] = args.if_tsne 
 config['tsne_group'] = eval(args.tsne_group)
-config['eps_SimGCL'] = args.eps_SimGCL
 config['init_method'] = args.init_method
 config['tsne_points'] = args.tsne_points
 config['loss'] = args.loss
 config['augment'] = args.augment
 config['alpha'] = args.alpha
-config['epoch_only_pop_for_BCloss'] = args.epoch_only_pop_for_BCloss
 config['centroid_mode'] = args.centroid_mode
 config['commonNeighbor_mode'] = args.commonNeighbor_mode
 config['n_cluster'] = args.n_cluster
@@ -66,15 +62,8 @@ config['epsilon_GCLRec'] = args.epsilon_GCLRec
 config['w_GCLRec'] = args.w_GCLRec
 config['k_aug'] = args.k_aug
 config['if_visual'] = args.if_visual
-config['GTN_K'] = args.GTN_K
-config['GTN_alpha'] = args.GTN_alpha
-config['if_SVD'] = args.if_SVD
-config['svd_q'] = args.svd_q
-config['tau_plus'] = args.tau_plus
-config['pop_gamma'] = args.pop_gamma
 config['if_projector'] = args.if_projector
 config['if_valid'] = args.if_valid
-config['temp_tau_pop'] = args.temp_tau_pop
 #备注
 config['comment'] = args.comment
 #加载预训练的embedding
@@ -93,7 +82,7 @@ log = {}
 
 LogItems = ['model', 'loss', 'alpha', 'temp_tau', 'comment']
 ArchitectureItems = ['model', 'dataset', 'seed', 'loss', 'augment', 'centroid_mode', 'commonNeighbor_mode', 'adaptive_method', 'init_method', 'perplexity']
-HyperparameterItems = ['temp_tau', 'alpha', 'lr', 'weight_decay', 'lambda1', 'n_cluster', 'sigma_gausse', 'eps_SimGCL', 'epsilon_GCLRec', 'w_GCLRec', 'k_aug', 'epoch_only_pop_for_BCloss']
+HyperparameterItems = ['temp_tau', 'alpha', 'lr', 'weight_decay', 'lambda1', 'n_cluster', 'sigma_gausse', 'epsilon_GCLRec', 'w_GCLRec', 'k_aug']
 for key in LogItems:
     log[key] = config[key]
 
